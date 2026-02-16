@@ -16,7 +16,19 @@ Por favor, escribe en impersonal las respuestas.
 
 ## 1. En Programación Orientada a Objetos (POO), ¿Qué buscan la **encapsulación** y **la ocultación** de información? Enumera brevemente algunas ventajas de la ocultación de información
 
-### Respuesta
+La encapsulación y la ocultación de información son conceptos inseparables que buscan la creación de componentes de software robustos, modulares y fáciles de mantener. La encapsulación se encarga de agrupar en una única unidad (la clase) tanto los datos (atributos) como las operaciones (métodos) que los manipulan, rompiendo con la separación tradicional de C donde las estructuras de datos (struct) y las funciones suelen estar desconectadas. Por su parte, la ocultación de información persigue restringir el acceso a los detalles internos de esa unidad, exponiendo solo lo estrictamente necesario para su uso.
+
+El objetivo fundamental de estos mecanismos es reducir el acoplamiento entre las distintas partes de un programa. Al ocultar la representación interna de los datos (por ejemplo, haciendo private los atributos), se evita que el código externo dependa de detalles de implementación que podrían cambiar en el futuro. Esto establece una distinción clara entre la interfaz (qué hace el objeto y cómo interactuar con él) y la implementación (cómo lo hace internamente), garantizando que los cambios dentro de una clase no provoquen una reacción en cadena de errores en el resto del sistema.
+
+Ventajas principales de la ocultación de información:
+
+* Integridad de los datos: Al impedir el acceso directo a los atributos, se asegura que el estado del objeto solo pueda modificarse a través de métodos controlados, evitando valores inválidos o inconsistentes.
+
+* Mantenibilidad y Flexibilidad: Permite cambiar la estructura interna de los datos o optimizar el código de los métodos sin que el código que usa la clase (el cliente) se vea afectado o tenga que ser reescrito.
+
+* Abstracción: Reduce la carga cognitiva del programador, ya que para usar un objeto solo necesita entender su interfaz pública, sin necesidad de comprender la complejidad de su funcionamiento interno (caja negra).
+
+* Depuración simplificada: Si un dato tiene un valor incorrecto, el error se localiza fácilmente en los métodos de la propia clase, en lugar de tener que buscar en todo el programa dónde se modificó esa variable global o estructura.
 
 ## 2. ¿Qué se entiende por la **interfaz pública** de un objeto o clase en POO? Describe brevemente cómo se relaciona con la ocultación de información
 
