@@ -54,71 +54,61 @@ Al ocultar los datos declarándolos private, se obliga a que cualquier modificac
 
 ## 5. Pon un ejemplo de una clase `Punto` en `Java`, con dos coordenadas, `x` e `y`, de tipo `double`, con un método `calcularDistanciaAOrigen`, y que haga uso de la ocultación de información. ¿Cuál es la interfaz pública de la clase `Punto`? ¿Qué significa `public` y `private`?
 
-### Respuesta
+Para implementar la clase Punto aplicando la ocultación de información, se definen los atributos x e y bajo el modificador de acceso private. Esto establece una diferencia fundamental respecto a una struct en C, ya que impide el acceso directo a las coordenadas desde fuera de la clase (por ejemplo, punto.x = 5.0 daría un error de compilación). El estado interno del objeto queda así protegido y solo es manipulable a través de los métodos que la clase decida exponer. En este caso, el cálculo de la distancia se encapsula dentro del método calcularDistanciaAOrigen, el cual tiene acceso directo a los atributos privados por estar dentro del mismo ámbito de clase.
+
+La interfaz pública de esta clase está constituida por aquellos miembros declarados como public: el constructor Punto(double x, double y) y el método calcularDistanciaAOrigen(). Estos elementos forman el contrato que la clase ofrece al exterior. El modificador public permite que cualquier otra clase del programa invoque estos métodos, mientras que private restringe la visibilidad estrictamente al bloque de código de la clase Punto. Si en el futuro se decidiera cambiar la implementación interna de coordenadas cartesianas a polares, solo habría que modificar el código privado, manteniendo intacta la interfaz pública y sin romper el código de quien use la clase.
+
+```java
+public class Punto {
+    // Atributos privados: Ocultación de información (Estado interno)
+    private double x;
+    private double y;
+
+    // Constructor público: Parte de la interfaz pública
+    public Punto(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    // Método público: Parte de la interfaz pública (Comportamiento)
+    public double calcularDistanciaAOrigen() {
+        // Puede acceder a x e y porque está dentro de la misma clase
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+    }
+}
+```
 
 ## 6. En Java, ¿A quiénes se pueden aplicar los modificadores `public` o `private`?
 
-### Respuesta
-
 ## 7. En POO, la visibilidad puede ser pública o privada, pero ¿existen más tipos de visibilidad? ¿Qué ocurre en Java? ¿Y en otros lenguajes?
-
-### Respuesta
 
 ## 8. Responde: Los miembros de instancia privados de un objeto están ocultos para (a) otras clases o (b) otras instancias, aunque sean de la misma clase. Pon un ejemplo añadiendo un método `calcularDistanciaAPunto(Punto otro)` y explica la respuesta
 
-### Respuesta
-
 ## 9. ¿Qué son los métodos "getter" y "setter" en los lenguajes orientados a objetos?
-
-### Respuesta
 
 ## 10. Cuando nos referimos a que la ocultación de información mejora la "seguridad" del programa, ¿nos referimos a que no pueda ser "hackeado"?
 
-### Respuesta
-
 ## 11. ¿Qué diferencia hay entre **miembro de instancia** y **miembro de clase**? ¿Los miembros de clase también se pueden ocultar?
-
-### Respuesta
 
 ## 12. Brevemente: ¿Tiene sentido que los constructores sean privados?
 
-### Respuesta
-
 ## 13. ¿Cómo se indican los **miembros de clase** en Java? Pon un ejemplo, en la clase `Punto` definida anteriormente, para que incluya miembros de clase que permitan saber cuáles son los valores `x` e `y` máximos que se han establecido en todos los puntos que se hayan creado hasta el momento
-
-### Respuesta
 
 ## 14. Como sería un método factoría dentro de la clase `Punto` para construir un `Punto` a partir de dos coordenadas, pero que las redondee al entero más cercano. Escribe sólo el código del método, no toda la clase ¿Has usado `static`?
 
-### Respuesta
-
 ## 15. Cambia la implementación de `Punto`. En vez de dos `double`, emplea un array interno de dos posiciones, intentando no modificar la interfaz pública de la clase
-
-### Respuesta
 
 ## 16. Si un atributo va a tener un método "getter" y "setter" públicos, ¿no es mejor declararlo público? ¿Cuál es la convención más habitual sobre los atributos, que sean públicos o privados? ¿Tiene esto algo que ver con las "invariantes de clase"?
 
-### Respuesta
-
 ## 17. ¿Qué significa que una clase sea **inmutable**? ¿qué es un método modificador? ¿Un método modificador es siempre un "setter"? ¿Tiene ventajas que una clase sea inmutable?
-
-### Respuesta
 
 ## 18. ¿Es recomendable incluir métodos "setter" siempre y como convención?
 
-### Respuesta
-
 ## 19. ¿La clase `String` en Java es mutable o inmutable? ¿Qué ocurre al concatenar dos cadenas? ¿Qué debemos hacer si vamos a hacer una operación que implique concatenar muchas veces para construir paso a paso una cadena muy larga?
-
-### Respuesta
 
 ## 20. En POO ¿Cómo se comparan objetos de una misma clase? ¿Por su contenido o por su identidad? ¿Qué es el método equals en Java? ¿Qué hace por defecto? ¿Cómo se deben comparar dos cadenas en Java?
 
-### Respuesta
-
 ## 21. ¿Qué son las clases "wrapper" en un lenguaje de programación orientado a objetos? ¿Cómo se hace? ¿Es un proceso automático? ¿Qué ventajas tienen? ¿Todos los lenguajes orientados a objetos tienen tipos primitivos y necesitan wrappers?
-
-### Respuesta
 
 ## 22. ¿En POO qué es un **tipo de dato enumerado**? ¿En Java, un tipo de dato enumerado es una clase? ¿Qué ventajas tienen en términos de encapsulación los enumerados en Java?
 
