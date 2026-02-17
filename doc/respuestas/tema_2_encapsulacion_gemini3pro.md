@@ -26,13 +26,17 @@ Ventajas principales de la ocultación de información:
 
 * Mantenibilidad y Flexibilidad: Permite cambiar la estructura interna de los datos o optimizar el código de los métodos sin que el código que usa la clase (el cliente) se vea afectado o tenga que ser reescrito.
 
-* Abstracción: Reduce la carga cognitiva del programador, ya que para usar un objeto solo necesita entender su interfaz pública, sin necesidad de comprender la complejidad de su funcionamiento interno (caja negra).
+* Abstracción: Reduce la carga cognitiva del programador, ya que para usar un objeto solo necesita entender su interfaz pública (se explica en el siguiente ejercicio), sin necesidad de comprender la complejidad de su funcionamiento interno (caja negra).
 
 * Depuración simplificada: Si un dato tiene un valor incorrecto, el error se localiza fácilmente en los métodos de la propia clase, en lugar de tener que buscar en todo el programa dónde se modificó esa variable global o estructura.
 
 ## 2. ¿Qué se entiende por la **interfaz pública** de un objeto o clase en POO? Describe brevemente cómo se relaciona con la ocultación de información
 
-### Respuesta
+La interfaz pública de una clase o un objeto constituye el conjunto de métodos y atributos (generalmente constantes) declarados con el modificador de acceso public, quedando así expuestos para ser utilizados por cualquier otra parte del programa. En analogía con el lenguaje C, se puede comparar con los prototipos de funciones declarados en un archivo de cabecera (.h), que definen cómo se debe invocar una funcionalidad sin revelar el código fuente de su implementación (.c). Es el contrato que la clase ofrece al exterior, especificando qué acciones puede realizar y qué parámetros requiere, pero sin detallar los algoritmos internos.
+
+Esta interfaz actúa como una capa de abstracción o frontera que separa el uso del objeto de su funcionamiento interno. Al interactuar con una instancia, el código cliente (quien usa la clase) solo necesita conocer la firma de los métodos públicos (nombre, parámetros y tipo de retorno). Todo lo que no pertenezca a esta interfaz pública se considera detalle de implementación y debe permanecer inaccesible, tratando al objeto como una "caja negra" donde solo importan las entradas y las salidas definidas.
+
+La relación con la ocultación de información es directa y complementaria: la interfaz pública es la única vía de acceso permitida a los datos ocultos. Mientras que la ocultación protege el estado interno (atributos private) para evitar manipulaciones indebidas, la interfaz pública proporciona los mecanismos controlados (métodos getters, setters u operaciones de negocio) para gestionar dicho estado de forma segura. Esta separación garantiza que se pueda modificar la implementación interna —por ejemplo, cambiando una estructura de datos o optimizando un algoritmo— sin afectar al código externo, siempre y cuando se mantenga inalterada la interfaz pública.
 
 ## 3. Brevemente: ¿Por qué hay que ser conscientes y diseñar con cuidado la **interfaz pública** de una clase? ¿Es fácil cambiarla?
 
