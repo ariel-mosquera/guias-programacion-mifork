@@ -94,7 +94,7 @@ Adicionalmente, Java posee una característica distintiva conocida como visibili
 
 En otros lenguajes como C++, también existe el modificador protected, aunque su funcionamiento se centra más estrictamente en la jerarquía de herencia y no otorga acceso automático a otras clases "vecinas" a menos que se utilice el mecanismo de friend. La declaración friend en C++ es una excepción controlada a la encapsulación que permite a funciones o clases externas específicas acceder a miembros privados, una característica que Java decidió no incluir para forzar un diseño más estructurado. Por otro lado, lenguajes como C# utilizan internal, que restringe la visibilidad al componente compilado (ensamblado o DLL) actual, similar conceptualmente al paquete de Java pero aplicado a la unidad de despliegue.
 
-## 8. Responde: Los miembros de instancia privados de un objeto están ocultos para (a) otras clases o (b) otras instancias, aunque sean de la misma clase. Pon un ejemplo añadiendo un método `calcularDistanciaAPunto(Punto otro)` y explica la respuesta
+## 8. Responde: Los miembros de instancia privados de un objeto están ocultos para: (a) otras clases o (b) otras instancias, aunque sean de la misma clase. Pon un ejemplo añadiendo un método `calcularDistanciaAPunto(Punto otro)` y explica la respuesta
 
 ## 9. ¿Qué son los métodos "getter" y "setter" en los lenguajes orientados a objetos?
 
