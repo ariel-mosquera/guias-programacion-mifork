@@ -46,7 +46,11 @@ Cambiar la interfaz pública una vez que ya está siendo utilizada es una tarea 
 
 ## 4. ¿Qué son las **invariantes de clase** y por qué la ocultación de información nos ayuda?
 
-### Respuesta
+Las invariantes de clase se definen como el conjunto de condiciones lógicas o restricciones que deben mantenerse verdaderas durante toda la vida útil de un objeto para que este se considere en un estado válido y consistente. A diferencia de una simple variable en C, que puede contener cualquier valor permitido por su tipo de dato (por ejemplo, un int que acepta cualquier número), un objeto en POO suele representar una entidad con reglas de negocio específicas. Un ejemplo clásico sería una clase Triangulo donde la suma de dos lados siempre debe ser mayor al tercero, o una clase Fecha donde el atributo dia nunca puede ser mayor que 31. Estas reglas son las invariantes.
+
+La ocultación de información es el mecanismo técnico que permite garantizar el cumplimiento de estas invariantes. Si los atributos de la clase fueran públicos (accesibles directamente como los campos de un struct en C), cualquier parte del programa podría modificar los datos arbitrariamente, asignando valores que violen las reglas (por ejemplo, triangulo.ladoA = -50), rompiendo así la consistencia del objeto sin que la clase pueda evitarlo. Al no haber barreras, la responsabilidad de verificar la validez de los datos recaería dispersamente en cada lugar donde se usa el objeto, lo cual es propenso a errores.
+
+Al ocultar los datos declarándolos private, se obliga a que cualquier modificación del estado pase necesariamente por los métodos de la clase (constructores y setters). Esto permite centralizar la lógica de validación en estos puntos de entrada. Si un valor propuesto viola una invariante, el método puede rechazar la asignación o lanzar una excepción, asegurando que el estado interno del objeto nunca se corrompa. De esta forma, la clase actúa como guardiana de su propia integridad, garantizando que, en cualquier momento que se inspeccione el objeto, este cumplirá con las reglas definidas en su diseño.
 
 ## 5. Pon un ejemplo de una clase `Punto` en `Java`, con dos coordenadas, `x` e `y`, de tipo `double`, con un método `calcularDistanciaAOrigen`, y que haga uso de la ocultación de información. ¿Cuál es la interfaz pública de la clase `Punto`? ¿Qué significa `public` y `private`?
 
