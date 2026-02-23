@@ -96,7 +96,14 @@ En otros lenguajes como C++, también existe el modificador protected, aunque su
 
 ## 8. Responde: Los miembros de instancia privados de un objeto están ocultos para: (a) otras clases o (b) otras instancias, aunque sean de la misma clase. Pon un ejemplo añadiendo un método `calcularDistanciaAPunto(Punto otro)` y explica la respuesta
 
+Alternativa (a). Oculto a otras clases porque es un mecanismo de seguridad al programar
+
 ## 9. ¿Qué son los métodos "getter" y "setter" en los lenguajes orientados a objetos?
+
+Son métodos públicos utilizados para:
+
+* **getter** -> Método para acceder al valor de un determinado atributo privado de un objeto
+* **setter** -> Método para cambiar el valor de un determinado atributo privado de un objeto. La creación de un setter implica que la clase deja de ser inmutable y por ello se pierden los beneficios de la inmutabilidad
 
 ## 10. Cuando nos referimos a que la ocultación de información mejora la "seguridad" del programa, ¿nos referimos a que no pueda ser "hackeado"?
 
