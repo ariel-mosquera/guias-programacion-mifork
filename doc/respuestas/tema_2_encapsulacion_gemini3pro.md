@@ -98,6 +98,33 @@ En otros lenguajes como C++, también existe el modificador protected, aunque su
 
 Alternativa (a). Oculto a otras clases porque es un mecanismo de seguridad al programar
 
+### Respuesta gemini
+
+La respuesta correcta es la (a): están ocultos para otras clases. En Java, al igual que en C++, el control de acceso se define a nivel de clase (el tipo de dato), no a nivel de objeto (la instancia). Esto significa que el código escrito dentro de la definición de la clase Punto tiene permiso total para acceder a los miembros privados de cualquier objeto que sea instancia de Punto. Por tanto, un objeto puede leer y modificar los datos privados de otro objeto de su misma clase si tiene una referencia a él.
+Esta característica es fundamental para la implementación eficiente de métodos binarios (que operan con dos objetos del mismo tipo), como comparaciones, copias o cálculos matemáticos. Si la privacidad fuese estricta por instancia (opción b), para calcular la distancia entre dos puntos sería obligatorio exponer los atributos x e y mediante métodos públicos (getters), rompiendo la encapsulación innecesariamente solo para que los propios objetos de la clase pudieran interactuar entre sí. Al permitir el acceso entre instancias hermanas, se mantiene la ocultación frente al exterior sin sacrificar la operatividad interna.
+A continuación se muestra el código donde se evidencia que this puede acceder directamente a otro.x y otro.y, a pesar de ser atributos marcados como private.
+
+```java
+public class Punto {
+    private double x;
+    private double y;
+
+    public Punto(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public double calcularDistanciaAPunto(Punto otro) {
+        // Acceso directo a los atributos privados de la instancia 'otro'.
+        // Esto es válido porque estamos dentro de la definición de la clase Punto.
+        double deltaX = this.x - otro.x; 
+        double deltaY = this.y - otro.y;
+        
+        return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    }
+}
+```
+
 ## 9. ¿Qué son los métodos "getter" y "setter" en los lenguajes orientados a objetos?
 
 Son métodos públicos utilizados para:
@@ -108,6 +135,39 @@ Son métodos públicos utilizados para:
 ## 10. Cuando nos referimos a que la ocultación de información mejora la "seguridad" del programa, ¿nos referimos a que no pueda ser "hackeado"?
 
 ## 11. ¿Qué diferencia hay entre **miembro de instancia** y **miembro de clase**? ¿Los miembros de clase también se pueden ocultar?
+
+La diferencia fundamental radica en el lugar de la memoria donde residen y a quién pertenecen. Un miembro de instancia (atributo o método convencional) pertenece exclusivamente a un objeto concreto creado en memoria. Cada vez que se instancia una clase, se crea una nueva copia independiente de todos sus atributos de instancia, de forma análoga a cómo cada variable de un tipo struct en C posee sus propios campos de memoria separados. Por el contrario, un miembro de clase (declarado en Java con la palabra reservada static) pertenece a la clase en sí misma. Solo existe una única copia compartida de este miembro en la memoria de la aplicación, sin importar cuántos objetos de esa clase se hayan creado, o incluso si no se ha creado ninguno. Esto se asemeja conceptualmente a una variable global en C, pero contenida dentro del espacio de nombres de la clase.
+
+A nivel de comportamiento, los métodos de instancia poseen implícitamente una referencia al objeto sobre el que se invocan (lo que en Java se conoce como this), permitiéndoles acceder a los atributos particulares de dicho objeto. Los métodos de clase (static), al no pertenecer a ninguna instancia en particular, carecen de esta referencia. Por consiguiente, un método estático no puede acceder directamente a los atributos de instancia; solo puede operar con otros miembros estáticos o con parámetros que se le pasen explícitamente. Esto es similar a una función pura en C que requiere recibir un puntero a una estructura para poder leer o modificar sus datos.
+
+Respecto a la ocultación, los miembros de clase sí se pueden y se suelen ocultar utilizando el modificador private. Al declarar un atributo como private static, este queda completamente protegido de accesos externos. Su comportamiento en este caso es equivalente al de una variable global declarada como static en un archivo .c, cuya visibilidad queda estrictamente limitada a las funciones definidas dentro de ese mismo archivo. Esta técnica es esencial para mantener estados globales controlados dentro de una clase, como por ejemplo un contador del número total de objetos instanciados, permitiendo su lectura desde el exterior únicamente a través de métodos public static controlados.
+
+```java
+public class Coche {
+    // Miembro de clase oculto (Compartido por todos los objetos Coche)
+    private static int contadorCoches = 0;
+
+    // Miembro de instancia oculto (Independiente para cada objeto Coche)
+    private String matricula;
+
+    public Coche(String matricula) {
+        this.matricula = matricula;
+        // Modificación del miembro de clase desde el constructor de instancia
+        contadorCoches++; 
+    }
+
+    // Método de clase público (Interfaz pública estática)
+    public static int getContadorCoches() {
+        return contadorCoches;
+    }
+}
+```
+
+### En resumen
+
+**Miembros de clase** &rarr; Son los miembros (atributos, métodos, etc) que tienen la palabra reservada ***static*** acompañando a su nombre, lo que hace con que no se cree una copia de ese miembro para cada instancia (u objeto) creado, es decir, todos las instancias de esa clase comparten ese mismo miembro
+
+**Miembros de instancia** &rarr; Son los miembros no estaticos (no llevan la palabra static), cada instancia tiene su propia copia de esos miembros, con sus propios valores iguales o no.
 
 ## 12. Brevemente: ¿Tiene sentido que los constructores sean privados?
 
