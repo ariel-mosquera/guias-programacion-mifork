@@ -12,6 +12,7 @@ Por favor, escribe en impersonal las respuestas.
 </prompt>
 ----
 -->
+
 # TEMA 2. Encapsulación
 
 ## 1. En Programación Orientada a Objetos (POO), ¿Qué buscan la **encapsulación** y **la ocultación** de información? Enumera brevemente algunas ventajas de la ocultación de información
@@ -22,13 +23,13 @@ El objetivo fundamental de estos mecanismos es reducir el acoplamiento entre las
 
 Ventajas principales de la ocultación de información:
 
-* Integridad de los datos: Al impedir el acceso directo a los atributos, se asegura que el estado del objeto solo pueda modificarse a través de métodos controlados, evitando valores inválidos o inconsistentes.
+- Integridad de los datos: Al impedir el acceso directo a los atributos, se asegura que el estado del objeto solo pueda modificarse a través de métodos controlados, evitando valores inválidos o inconsistentes.
 
-* Mantenibilidad y Flexibilidad: Permite cambiar la estructura interna de los datos o optimizar el código de los métodos sin que el código que usa la clase (el cliente) se vea afectado o tenga que ser reescrito.
+- Mantenibilidad y Flexibilidad: Permite cambiar la estructura interna de los datos o optimizar el código de los métodos sin que el código que usa la clase (el cliente) se vea afectado o tenga que ser reescrito.
 
-* Abstracción: Reduce la carga cognitiva del programador, ya que para usar un objeto solo necesita entender su interfaz pública (se explica en el siguiente ejercicio), sin necesidad de comprender la complejidad de su funcionamiento interno (caja negra).
+- Abstracción: Reduce la carga cognitiva del programador, ya que para usar un objeto solo necesita entender su interfaz pública (se explica en el siguiente ejercicio), sin necesidad de comprender la complejidad de su funcionamiento interno (caja negra).
 
-* Depuración simplificada: Si un dato tiene un valor incorrecto, el error se localiza fácilmente en los métodos de la propia clase, en lugar de tener que buscar en todo el programa dónde se modificó esa variable global o estructura.
+- Depuración simplificada: Si un dato tiene un valor incorrecto, el error se localiza fácilmente en los métodos de la propia clase, en lugar de tener que buscar en todo el programa dónde se modificó esa variable global o estructura.
 
 ## 2. ¿Qué se entiende por la **interfaz pública** de un objeto o clase en POO? Describe brevemente cómo se relaciona con la ocultación de información
 
@@ -117,9 +118,9 @@ public class Punto {
     public double calcularDistanciaAPunto(Punto otro) {
         // Acceso directo a los atributos privados de la instancia 'otro'.
         // Esto es válido porque estamos dentro de la definición de la clase Punto.
-        double deltaX = this.x - otro.x; 
+        double deltaX = this.x - otro.x;
         double deltaY = this.y - otro.y;
-        
+
         return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
     }
 }
@@ -129,8 +130,8 @@ public class Punto {
 
 Son métodos públicos utilizados para:
 
-* **getter** -> Método para acceder al valor de un determinado atributo privado de un objeto
-* **setter** -> Método para cambiar el valor de un determinado atributo privado de un objeto. La creación de un setter implica que la clase deja de ser inmutable y por ello se pierden los beneficios de la inmutabilidad
+- **getter** -> Método para acceder al valor de un determinado atributo privado de un objeto
+- **setter** -> Método para cambiar el valor de un determinado atributo privado de un objeto. La creación de un setter implica que la clase deja de ser inmutable y por ello se pierden los beneficios de la inmutabilidad
 
 ## 10. Cuando nos referimos a que la ocultación de información mejora la "seguridad" del programa, ¿nos referimos a que no pueda ser "hackeado"?
 
@@ -153,7 +154,7 @@ public class Coche {
     public Coche(String matricula) {
         this.matricula = matricula;
         // Modificación del miembro de clase desde el constructor de instancia
-        contadorCoches++; 
+        contadorCoches++;
     }
 
     // Método de clase público (Interfaz pública estática)
@@ -165,7 +166,7 @@ public class Coche {
 
 ### En resumen
 
-**Miembros de clase** &rarr; Son los miembros (atributos, métodos, etc) que tienen la palabra reservada ***static*** acompañando a su nombre, lo que hace con que no se cree una copia de ese miembro para cada instancia (u objeto) creado, es decir, todos las instancias de esa clase comparten ese mismo miembro
+**Miembros de clase** &rarr; Son los miembros (atributos, métodos, etc) que tienen la palabra reservada **_static_** acompañando a su nombre, lo que hace con que no se cree una copia de ese miembro para cada instancia (u objeto) creado, es decir, todos las instancias de esa clase comparten ese mismo miembro
 
 **Miembros de instancia** &rarr; Son los miembros no estaticos (no llevan la palabra static), cada instancia tiene su propia copia de esos miembros, con sus propios valores iguales o no.
 
@@ -181,13 +182,76 @@ public class Coche {
 
 ## 17. ¿Qué significa que una clase sea **inmutable**? ¿qué es un método modificador? ¿Un método modificador es siempre un "setter"? ¿Tiene ventajas que una clase sea inmutable?
 
+Una clase inmutable es aquella en la que no se permite cambios de estado interno
+
+Un método modificador es todo aquel que cambia el estado interno de la instancia, los más comunes son los métodos settter
+
+las ventajas:
+
+- Más faciles de leer
+- Menos errores de programacion
+- Mejor en concurrencia
+
 ## 18. ¿Es recomendable incluir métodos "setter" siempre y como convención?
+
+Por convención no, dado que eso haria la clase mutable
 
 ## 19. ¿La clase `String` en Java es mutable o inmutable? ¿Qué ocurre al concatenar dos cadenas? ¿Qué debemos hacer si vamos a hacer una operación que implique concatenar muchas veces para construir paso a paso una cadena muy larga?
 
+En Java, la clase `String` es estrictamente **inmutable**. Esto representa un cambio fundamental respecto a C o C++, donde una cadena de texto suele manejarse como un arreglo de caracteres (`char[]` o `char*`) cuyos elementos pueden ser modificados individualmente en la misma dirección de memoria (por ejemplo, `cadena[0] = 'A'`). En Java, una vez que se instancia un objeto `String`, la secuencia de caracteres que encapsula queda fijada y no puede ser alterada bajo ninguna circunstancia. Esta inmutabilidad garantiza la seguridad y la integridad de los datos, permitiendo al entorno de ejecución optimizar el uso de memoria compartiendo instancias idénticas.
+
+Debido a esta inmutabilidad, cuando se concatenan dos cadenas (utilizando el operador `+` o el método `concat`), **no se modifica ninguna de las cadenas originales**. En su lugar, el sistema reserva un nuevo bloque de memoria y construye un objeto `String` completamente nuevo que contiene el resultado combinado de ambas. Las cadenas originales permanecen intactas en la memoria hasta que el recolector de basura (_Garbage Collector_) las elimine si ya no están siendo referenciadas por ninguna variable.
+
+Si se requiere realizar un proceso que implique múltiples concatenaciones sucesivas (por ejemplo, construir un texto línea por línea dentro de un bucle), utilizar la clase `String` resulta sumamente ineficiente. Esta práctica generaría una gran cantidad de objetos intermedios desechables, saturando la memoria y degradando el rendimiento, un problema análogo a llamar a `realloc` y copiar todo el contenido del buffer en cada iteración en C. Para resolver esto, se debe utilizar la clase **`StringBuilder`** (o `StringBuffer` en entornos multihilo). Estas clases actúan como buffers dinámicos y mutables; permiten añadir, insertar o modificar caracteres directamente sobre el mismo espacio de memoria subyacente, y solo generan un objeto `String` definitivo y constante al finalizar el proceso mediante la llamada al método `toString()`.
+
+```java
+// Ejemplo de construcción eficiente de cadenas
+public String construirReporte(String[] lineas) {
+    // Se utiliza StringBuilder por su mutabilidad
+    StringBuilder constructor = new StringBuilder();
+
+    for (int i = 0; i < lineas.length; i++) {
+        // 'append' modifica el buffer interno, NO crea un nuevo objeto en cada iteración
+        constructor.append(i).append(": ").append(lineas[i]).append("\n");
+    }
+
+    // Se genera el String inmutable final solo una vez al terminar
+    return constructor.toString();
+}
+
+```
+
 ## 20. En POO ¿Cómo se comparan objetos de una misma clase? ¿Por su contenido o por su identidad? ¿Qué es el método equals en Java? ¿Qué hace por defecto? ¿Cómo se deben comparar dos cadenas en Java?
 
+En la Programación Orientada a Objetos, la comparación entre dos objetos puede realizarse bajo dos criterios fundamentales: por su identidad o por su contenido. La identidad se refiere a determinar si dos referencias apuntan exactamente a la misma posición de memoria, de forma análoga a comparar directamente dos punteros en C (`ptr1 == ptr2`). El contenido, por otro lado, implica evaluar si los datos internos (el estado o los atributos) de dos instancias alojadas en diferentes posiciones de memoria son lógicamente equivalentes, lo cual en C requeriría una función dedicada a comparar campo por campo de una estructura. En Java, el operador relacional estandarizado `==` siempre evalúa la identidad de los objetos, retornando verdadero únicamente si ambas variables referencian de forma estricta a la misma instancia física en el montículo (_heap_).
+
+Para resolver la necesidad de comparar objetos por su contenido lógico, Java proporciona el método `equals(Object o)`. Este método está definido en la clase raíz del lenguaje (`java.lang.Object`), de la cual heredan implícitamente todas las demás clases. Por defecto, la implementación base de `equals` realiza exactamente la misma acción que el operador `==`: comparar las direcciones de memoria. Sin embargo, el diseño orientado a objetos permite que cada clase sobrescriba (redefina) este método para establecer sus propias reglas lógicas de igualdad. Al hacerlo, la clase encapsula la lógica necesaria para determinar cuándo dos objetos diferentes poseen un estado equivalente según las reglas de negocio, ocultando esa complejidad al código externo.
+
+En el caso particular de las cadenas de texto (`String`), se debe utilizar invariablemente el método `equals()` para comparar su contenido. La clase `String` en Java ya incluye una redefinición interna de este método que se encarga de recorrer y verificar, carácter por carácter, si ambas secuencias son idénticas. Si se utilizara el operador `==` para comparar el texto de dos variables, el resultado podría ser falso de forma impredecible, ya que el sistema simplemente confirmaría que se trata de dos objetos de texto almacenados en direcciones de memoria separadas, ignorando por completo que alberguen las mismas palabras.
+
+```java
+// Ejemplo de comparación entre objetos String
+public boolean validarContrasena(String entradaUsuario) {
+    String contrasenaCorrecta = new String("secreta123");
+
+    // INCORRECTO: Compara direcciones de memoria (punteros), no el texto.
+    // boolean esValida = (entradaUsuario == contrasenaCorrecta);
+
+    // CORRECTO: Compara el estado interno (los caracteres) usando la lógica encapsulada.
+    boolean esValida = entradaUsuario.equals(contrasenaCorrecta);
+
+    return esValida;
+}
+
+```
+
 ## 21. ¿Qué son las clases "wrapper" en un lenguaje de programación orientado a objetos? ¿Cómo se hace? ¿Es un proceso automático? ¿Qué ventajas tienen? ¿Todos los lenguajes orientados a objetos tienen tipos primitivos y necesitan wrappers?
+
+En lenguajes como C, los tipos de datos básicos (`int`, `float`, `char`) son valores puros almacenados directamente en memoria, desprovistos de cualquier comportamiento o metadato. En Java, estos "tipos primitivos" coexisten con el paradigma de objetos puramente por razones de eficiencia y rendimiento. Sin embargo, muchas estructuras y componentes avanzados del lenguaje requieren trabajar exclusivamente con objetos (referencias). Las clases envoltorio, conocidas como _wrapper classes_ (por ejemplo, `Integer` para `int`, o `Double` para `double`), resuelven esta limitación encapsulando el valor primitivo dentro de un objeto real. Es conceptualmente similar a introducir un tipo de dato básico dentro de un `struct` en C, únicamente para poder pasar un puntero genérico a una función que no acepta valores escalares simples.
+
+La conversión entre un tipo primitivo y su clase envoltorio puede realizarse explícitamente (por ejemplo, invocando `Integer.valueOf(5)`). Sin embargo, en las versiones modernas de Java, este proceso es completamente automático gracias a una característica denominada _autoboxing_ (empaquetado) y _unboxing_ (desempaquetado automático). El compilador detecta de forma inteligente cuándo se requiere un objeto en lugar de un primitivo (o viceversa) e inyecta el código de conversión necesario en segundo plano. Esto permite, por ejemplo, asignar directamente un número entero a una variable de tipo `Integer` o realizar operaciones aritméticas nativas directamente sobre los objetos _wrapper_ sin requerir conversiones manuales tediosas por parte del programador.
+
+La ventaja principal de estas clases es que dotan a los datos básicos de todas las capacidades de la programación orientada a objetos. Permiten que los primitivos se almacenen en colecciones dinámicas (las cuales solo admiten referencias a objetos), y además centralizan métodos de utilidad muy comunes, como la conversión de una cadena de texto a un número (`Integer.parseInt("123")`). Respecto al panorama general, no todos los lenguajes orientados a objetos poseen tipos primitivos ni necesitan _wrappers_. Lenguajes puramente orientados a objetos, como Python o Ruby, tratan absolutamente todo como un objeto desde su concepción; en ellos, un simple número `1` ya posee métodos y estado. Son los lenguajes de diseño híbrido, como C++ o Java, los que mantienen los tipos primitivos como herencia histórica para optimizar el uso de CPU, requiriendo estas clases envoltorio como puente hacia el mundo de los objetos.
 
 ## 22. ¿En POO qué es un **tipo de dato enumerado**? ¿En Java, un tipo de dato enumerado es una clase? ¿Qué ventajas tienen en términos de encapsulación los enumerados en Java?
 
@@ -307,7 +371,7 @@ El parámetro booleano enHemisferioNorte actúa como un inversor de la lógica. 
             }
 
             // Métodos para determinar la estación (considerando superposición en meses de cambio)
-            
+
             public boolean esDePrimavera(boolean enHemisferioNorte) {
                 if (enHemisferioNorte) {
                     // Primavera Norte: Marzo (3) a Junio (6)
