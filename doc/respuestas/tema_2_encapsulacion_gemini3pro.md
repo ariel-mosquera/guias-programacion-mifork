@@ -176,6 +176,23 @@ public class Coche {
 
 ## 14. Como sería un método factoría dentro de la clase `Punto` para construir un `Punto` a partir de dos coordenadas, pero que las redondee al entero más cercano. Escribe sólo el código del método, no toda la clase ¿Has usado `static`?
 
+Un método factoría (_factory method_) es una técnica de diseño donde se emplea un método específico para instanciar y devolver objetos, sustituyendo o complementando la llamada directa al constructor convencional. Para implementar este mecanismo de forma operativa, es estrictamente necesario utilizar el modificador `static`. Esta obligatoriedad radica en que el propósito del método es precisamente crear un objeto que todavía no existe en memoria; si el método fuera de instancia, requeriría un objeto previamente inicializado para poder ser invocado. Al declararlo como estático, su comportamiento se asemeja al de una función global en C (como una función que internamente llama a `malloc` y devuelve un puntero a la nueva estructura), permitiendo su ejecución directa a través del nombre de la clase, sin depender de ninguna instancia previa.
+
+La utilización de métodos factoría estáticos resuelve una limitación técnica importante inherente tanto a Java como a C++: la imposibilidad de sobrecargar constructores que posean exactamente la misma firma (mismo número y tipo de parámetros). Si la clase `Punto` ya posee un constructor normal que recibe dos `double`, el compilador no permitiría añadir otro constructor idéntico solo para la variante redondeada. Al encapsular la creación en un método estático, se le puede otorgar un nombre descriptivo que aclare su intención. Internamente, este método se encarga de aplicar el preprocesamiento necesario —el redondeo de las coordenadas recibidas— para finalmente delegar la construcción real al constructor estándar, manteniendo la encapsulación y la limpieza del código cliente.
+
+```java
+public static Punto crearPuntoRedondeado(double x, double y) {
+    // Math.round redondea al entero más cercano devolviendo un tipo 'long'.
+    // Se realiza una conversión (cast) a 'double' para coincidir con el constructor.
+    double xRedondeado = (double) Math.round(x);
+    double yRedondeado = (double) Math.round(y);
+
+    // Se invoca al constructor estándar de la clase para instanciar el objeto
+    return new Punto(xRedondeado, yRedondeado);
+}
+
+```
+
 ## 15. Cambia la implementación de `Punto`. En vez de dos `double`, emplea un array interno de dos posiciones, intentando no modificar la interfaz pública de la clase
 
 ## 16. Si un atributo va a tener un método "getter" y "setter" públicos, ¿no es mejor declararlo público? ¿Cuál es la convención más habitual sobre los atributos, que sean públicos o privados? ¿Tiene esto algo que ver con las "invariantes de clase"?
