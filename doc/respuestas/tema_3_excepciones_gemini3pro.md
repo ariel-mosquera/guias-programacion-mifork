@@ -452,10 +452,126 @@ public class Sistema {
 
 ## 13. Pon un ejemplo en Java de firma de método que incluya `throws`, de una función que abre un fichero pero que declara que no le interesa menejar la excepción de si el fichero no existe, sino que se propague hacia arriba. Eso sí, acuérdate del `finally`.
 
+Cuando se requiere interactuar con el sistema de archivos y delegar el manejo de posibles errores de existencia, se emplea la cláusula `throws` en la cabecera del método. Al especificar una excepción controlada como `FileNotFoundException`, el compilador autoriza la omisión del bloque `catch` correspondiente. De esta manera, si el archivo solicitado no se encuentra, el objeto excepción generado interrumpe el flujo local y se propaga automáticamente hacia la función llamadora, transfiriéndole la responsabilidad de informar al usuario o de ejecutar un plan de contingencia.
+
+A pesar de delegar la resolución del error principal, la función actual sigue manteniendo la responsabilidad de gestionar correctamente los recursos del sistema operativo que intenta manipular. Para resolver esta necesidad técnica sin capturar la excepción, se utiliza una estructura `try-finally`. Este diseño asegura que, si el archivo logra abrirse pero ocurre un fallo inesperado durante su lectura, el entorno de ejecución forzará el paso por el bloque `finally` para cerrar el fichero de forma segura antes de que el error abandone definitivamente el método.
+
+```java
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+public class LectorDatos {
+    // La firma advierte que el método propagará excepciones controladas
+    public void extraerInformacion(String ruta) throws FileNotFoundException, IOException {
+        FileInputStream flujoEntrada = null;
+
+        try {
+            // Si el fichero no existe, se lanza FileNotFoundException.
+            // Al no haber catch, el control salta inmediatamente al bloque finally.
+            flujoEntrada = new FileInputStream(ruta);
+
+            System.out.println("Fichero abierto correctamente. Iniciando lectura...");
+            // Aquí irían las operaciones de lectura que podrían lanzar otras excepciones
+
+        } finally {
+            // Este bloque garantiza el cierre del recurso antes de la propagación.
+            // Es vital comprobar que no sea nulo, por si el error ocurrió al intentar abrirlo.
+            if (flujoEntrada != null) {
+                flujoEntrada.close();
+                System.out.println("Cierre del fichero garantizado en finally.");
+            }
+        }
+    }
+}
+```
+
+En el código expuesto, la firma del método actúa como un contrato transparente. Si la instanciación de `FileInputStream` fracasa, la variable `flujoEntrada` conserva su valor nulo original; el flujo salta al bloque `finally`, omite la instrucción de cierre y la excepción original se propaga intacta hacia arriba en la pila de llamadas. Por el contrario, si la apertura es exitosa pero emerge una anomalía posterior, el bloque `finally` invoca el método `close()`, liberando el descriptor de archivo y protegiendo la memoria del sistema operativo, todo ello sin interferir en la propagación natural del error hacia el código llamador.
+
 ## 14. ¿Podemos poner en `throws` excepciones no controladas, como `RuntimeException`? ¿Debería el método llamador entonces poner `try-catch` en ese caso? ¿Qué sentido tendría?
+
+En el lenguaje Java, es sintácticamente correcto incluir excepciones no controladas, como `RuntimeException` o cualquiera de sus clases derivadas (por ejemplo, `IllegalArgumentException`), dentro de la cláusula `throws` en la firma de un método. Sin embargo, realizar esta declaración explícita no altera la naturaleza intrínseca de la excepción. Dado que sigue perteneciendo a la categoría de las no controladas, el compilador **no obligará** al método llamador a envolver la invocación en una estructura `try-catch`, ni le exigirá volver a declararla para propagarla. La gestión del error seguirá siendo completamente opcional a nivel de compilación.
+
+El propósito principal de declarar una excepción no controlada mediante `throws` es puramente **documental e informativo**. Al incluirla en la firma, se establece un contrato claro en la Interfaz de Programación de Aplicaciones (API) de la clase, comunicando a otros desarrolladores bajo qué circunstancias lógicas la operación podría fallar de manera abrupta. Esta práctica es especialmente útil cuando se genera documentación técnica automatizada (como _Javadoc_), ya que permite detallar las precondiciones que deben cumplir los argumentos antes de invocar la rutina, mejorando la comprensión del encapsulamiento y del comportamiento del objeto.
+
+Por ejemplo, al diseñar el método que calcula la raíz cuadrada, añadir `throws IllegalArgumentException` a su firma sirve como una advertencia visual directa. Aunque el sistema no fuerce la captura del error, esta señal preventiva indica al programador que consume la clase que debe asegurarse de no enviar números negativos. Con esta información, el código llamador puede decidir de forma consciente cómo protegerse: ya sea validando los datos de entrada previamente mediante sentencias condicionales clásicas, o decidiendo implementar un bloque `try-catch` si los números provienen de una fuente externa e impredecible.
 
 ## 15. ¿Cuándo se recomienda usar excepciones controladas, como `IOException`, y cuándo no controladas como `IllegalArgumentException`? ¿Existen en todos los lenguajes ambas opciones? En los que sólo existe una opción, ¿cuál es la más habitual?
 
+La recomendación general en el diseño de software establece que las excepciones **controladas** (como `IOException`) deben emplearse para situaciones excepcionales pero previsibles y, sobre todo, recuperables. Suelen estar causadas por factores externos al programa y dependientes del entorno, como redes caídas o archivos inexistentes. Al forzar su declaración o captura, se garantiza la resiliencia del sistema frente a contingencias ambientales. Por el contrario, las excepciones **no controladas** (como `IllegalArgumentException`) se reservan para errores de programación o fallos en la lógica interna, como proporcionar parámetros inválidos o acceder a referencias nulas. Estos representan defectos lógicos (_bugs_) que el desarrollador debería evitar o corregir en el código fuente mediante validaciones previas, en lugar de intentar recuperarse de ellos en tiempo de ejecución.
+
+La existencia de estas dos categorías no es una norma universal en la programación. De hecho, Java es uno de los pocos lenguajes de uso masivo que implementa y hace cumplir estrictamente el concepto de excepciones controladas a nivel de compilador. Lenguajes con orientación a objetos que sucedieron o compiten con Java, como C#, Python, Ruby o incluso Kotlin, optaron deliberadamente por no incluir excepciones controladas en su diseño. Asimismo, en C++, aunque se introdujo el mecanismo de excepciones, todas operan de forma equivalente a las no controladas, delegando la responsabilidad de su captura a la disciplina del desarrollador.
+
+En la inmensa mayoría de los lenguajes que disponen de una única opción, el modelo predominante es el de las **excepciones no controladas**. La evolución de la ingeniería de software y la experiencia comunitaria han revelado que, si bien la obligatoriedad impuesta por las excepciones controladas resulta teóricamente muy sólida para garantizar la robustez, en la práctica suele generar código excesivamente verboso y un acoplamiento muy rígido entre las capas de la aplicación. Por ello, el paradigma moderno prefiere utilizar exclusivamente excepciones no controladas, confiando la correcta gestión de los errores a una documentación exhaustiva (como el uso informativo de `throws`), a una arquitectura limpia y a la implementación de pruebas automatizadas.
+
 ## 16. ¿Tiene sentido lanzar excepciones dentro del `catch`? ¿Se puede relanzar la misma excepción capturada? ¿Cuándo tendría sentido hacer esto último? Pon ejemplos de ambos casos.
 
+Es una práctica completamente válida y muy habitual lanzar una nueva excepción desde el interior de un bloque `catch`. Esta técnica, conocida como "traducción" o "envoltura" de excepciones (_exception wrapping_), se utiliza para mejorar la encapsulación del sistema. Cuando una rutina de bajo nivel captura un error técnico muy específico (como un fallo de acceso al disco rígido), en lugar de propagar esos detalles de infraestructura al código llamador, se instancia y lanza una nueva excepción de más alto nivel. De este modo, se representa el problema en términos del dominio de la aplicación, ocultando la complejidad subyacente.
+
+```java
+public void cargarConfiguracion(String ruta) {
+    try {
+        // Código hipotético que podría fallar al acceder al sistema de archivos
+        abrirArchivoFisico(ruta);
+
+    } catch (IOException e) {
+        // Se lanza una NUEVA excepción adaptada al contexto, a menudo adjuntando la causa original
+        throw new RuntimeException("Fallo al inicializar el modulo de configuracion del sistema.", e);
+    }
+}
+```
+
+Por otro lado, también es posible e igualmente útil relanzar exactamente la **misma excepción** que acaba de ser interceptada. Para lograrlo, simplemente se emplea la instrucción `throw` seguida de la variable de referencia definida en los parámetros del bloque `catch`. El sentido de realizar esta maniobra radica en la necesidad de ejecutar una acción parcial en el nivel actual de la pila de llamadas, pero sin asumir la responsabilidad de dar por solucionado el fallo de manera definitiva.
+
+```java
+public void procesarTransaccion(double monto) {
+    try {
+        Calculadora calc = new Calculadora();
+        calc.calcularRaiz(monto); // Podría lanzar IllegalArgumentException
+
+    } catch (IllegalArgumentException e) {
+        // 1. Se realiza una acción local: registrar el error silenciosamente en un archivo de auditoría
+        System.out.println("LOG DE AUDITORIA: Intento de transaccion matematica invalida.");
+
+        // 2. Se relanza la MISMA excepción para que la capa superior decida cómo avisar al usuario
+        throw e;
+    }
+}
+```
+
+En la arquitectura de software, ambas técnicas son fundamentales para un manejo de errores robusto. Mientras que la traducción de excepciones evita que los detalles de implementación se filtren hacia capas superiores, relanzar la misma excepción actúa como un punto de control intermedio. Esto permite auditar el error, deshacer operaciones parciales o liberar recursos específicos que no encajan en un bloque `finally`, para acto seguido permitir que el flujo de la excepción continúe su propagación natural.
+
 ## 17. ¿En qué consiste que una excepción sea la **"causa"** de otra excepción? Pon un ejemplo en Java, donde capturemos una excepción de bajo nivel y la encapsulemos en otra personalizada de alto nivel. Cuando una excepción sale por pantalla y tiene una causa, ¿se ve?
+
+En la programación orientada a objetos, el mecanismo por el cual una excepción se convierte en la "causa" de otra se denomina encadenamiento de excepciones (_exception chaining_). Esto sucede cuando un bloque `catch` intercepta un error de bajo nivel (por ejemplo, un fallo técnico al leer un archivo) y, en lugar de propagarlo directamente, instancia y lanza una nueva excepción de más alto nivel que explica el problema en términos lógicos del dominio de la aplicación. Para no perder la valiosa información técnica del fallo original, el objeto de la primera excepción se pasa como argumento al constructor de la nueva, quedando encapsulado de forma segura en su interior como la "causa raíz" (_root cause_).
+
+```java
+// Definición de una excepción personalizada de alto nivel
+public class ConfiguracionException extends RuntimeException {
+    // El constructor recibe el mensaje y el objeto excepción que actuará como causa
+    public ConfiguracionException(String mensaje, Throwable causa) {
+        super(mensaje, causa); // Se inicializa la causa en la clase base
+    }
+}
+
+public class GestorSistema {
+    public void cargarAjustes() {
+        try {
+            // Se simula un error técnico de bajo nivel (ej. fallo del sistema de archivos)
+            throw new java.io.IOException("Acceso denegado al disco C:");
+
+        } catch (java.io.IOException e) {
+            // Se captura el error técnico y se encapsula como CAUSA de un error lógico
+            throw new ConfiguracionException("No se pudo inicializar el modulo del sistema.", e);
+        }
+    }
+
+    public static void main(String[] args) {
+        GestorSistema gestor = new GestorSistema();
+        // Si no se captura aquí, el programa fallará mostrando ambas excepciones
+        gestor.cargarAjustes();
+    }
+}
+```
+
+Cuando una excepción encadenada de este tipo interrumpe el programa por no ser controlada en ningún punto, la información sobre la causa sí resulta visible. El entorno de ejecución de Java imprime automáticamente la traza de la pila (_stack trace_) en la consola, mostrando primero la excepción de alto nivel que desencadenó la salida. A continuación, añade la cláusula `Caused by:` (Causado por:) seguida del tipo, el mensaje y la traza de la excepción original que fue encapsulada. Esta salida proporciona una visión integral para la depuración: permite comprender qué operación lógica falló a nivel general y, simultáneamente, cuál fue el error técnico exacto y la línea de código específica que originó el colapso desde las capas inferiores del sistema.
