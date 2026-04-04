@@ -135,6 +135,12 @@ Son métodos públicos utilizados para:
 
 ## 10. Cuando nos referimos a que la ocultación de información mejora la "seguridad" del programa, ¿nos referimos a que no pueda ser "hackeado"?
 
+En el contexto de la Programación Orientada a Objetos, afirmar que la ocultación de información mejora la "seguridad" no implica ningún tipo de protección contra ataques cibernéticos, intrusiones maliciosas o lo que comúnmente se denomina "hackeo". La seguridad a la que se hace referencia es la **seguridad del tipo y del estado interno** (más cercana al concepto de *safety* en inglés que al de *security*). En lenguajes de programación estructurada como C, donde los campos de un `struct` están expuestos por defecto, cualquier función del programa puede alterar los datos de forma errónea o accidental, lo que frecuentemente deriva en comportamientos impredecibles y caídas del sistema.
+
+La ocultación de información, por tanto, protege al programa contra los errores involuntarios de los propios desarrolladores al interactuar con el código. Al declarar los atributos de una clase como `private`, se erige una barrera arquitectónica que restringe el acceso directo a la memoria del objeto. Cualquier intento de modificación debe canalizarse obligatoriamente a través de la interfaz pública (los métodos), la cual actúa como un filtro donde se pueden programar validaciones lógicas. Esta restricción estructural garantiza que el objeto nunca adquiera un estado lógicamente inválido durante su ciclo de vida, previniendo un gran volumen de errores de software o *bugs*.
+
+Por el contrario, la invulnerabilidad frente al "hackeo" depende de disciplinas y técnicas completamente ajenas a la encapsulación, tales como el cifrado de datos, la validación de la entrada del usuario, o la prevención de desbordamientos de búfer (una vulnerabilidad clásica en C/C++). De hecho, a nivel de la máquina virtual de Java (JVM), los datos protegidos bajo el modificador `private` siguen almacenados en texto plano en la memoria RAM; un atacante con los privilegios suficientes en el sistema operativo, o un programador utilizando características reflexivas del propio lenguaje (*Reflection API*), podría leer y modificar estos atributos privados saltándose todas las barreras de la POO. En definitiva, la encapsulación es una herramienta de diseño para la robustez del código, no un mecanismo de ciberseguridad.
+
 ## 11. ¿Qué diferencia hay entre **miembro de instancia** y **miembro de clase**? ¿Los miembros de clase también se pueden ocultar?
 
 La diferencia fundamental radica en el lugar de la memoria donde residen y a quién pertenecen. Un miembro de instancia (atributo o método convencional) pertenece exclusivamente a un objeto concreto creado en memoria. Cada vez que se instancia una clase, se crea una nueva copia independiente de todos sus atributos de instancia, de forma análoga a cómo cada variable de un tipo struct en C posee sus propios campos de memoria separados. Por el contrario, un miembro de clase (declarado en Java con la palabra reservada static) pertenece a la clase en sí misma. Solo existe una única copia compartida de este miembro en la memoria de la aplicación, sin importar cuántos objetos de esa clase se hayan creado, o incluso si no se ha creado ninguno. Esto se asemeja conceptualmente a una variable global en C, pero contenida dentro del espacio de nombres de la clase.
@@ -172,7 +178,59 @@ public class Coche {
 
 ## 12. Brevemente: ¿Tiene sentido que los constructores sean privados?
 
+Sí, tiene absoluto sentido y constituye una práctica de diseño arquitectónico fundamental en la Programación Orientada a Objetos. Al declarar un constructor como `private`, se anula la capacidad de cualquier clase externa para crear instancias de ese objeto utilizando el operador `new`. Desde la perspectiva de C, esto sería análogo a mantener oculta la definición interna de un `struct` en un archivo fuente y exponer únicamente un puntero opaco en la cabecera, obligando al programador a invocar una función específica de inicialización para obtener una referencia válida, garantizando así un control centralizado sobre la asignación de memoria.
+
+El uso más habitual de un constructor privado se da en conjunción con los métodos factoría estáticos (*factory methods*), como el método `crearPuntoRedondeado` que se abordó en preguntas anteriores. Al bloquear el acceso al constructor, se fuerza al código cliente a utilizar exclusivamente estos métodos públicos de creación, los cuales pueden incluir lógica de validación previa o retornar instancias preexistentes. Otra aplicación crítica es el patrón de diseño *Singleton*, cuyo objetivo es asegurar que exista una y solo una instancia de una clase durante toda la ejecución del programa (por ejemplo, un gestor de configuración global); el constructor privado es el mecanismo que impide matemáticamente la creación accidental de copias adicionales.
+
+Finalmente, los constructores privados son esenciales en el diseño de las denominadas "clases de utilidad". Estas clases se conciben como meros contenedores lógicos para agrupar constantes y métodos puramente estáticos, operando de forma idéntica a una librería de funciones en C (por ejemplo, `math.h`). Un caso representativo en Java es la clase `java.lang.Math`. Dado que este tipo de clases no poseen atributos de instancia ni mantienen un estado interno, crear un objeto de ellas resultaría ilógico y supondría un desperdicio de memoria. Incluir un constructor privado y vacío es la técnica estándar para prohibir explícitamente su instanciación en todo el sistema.
+
 ## 13. ¿Cómo se indican los **miembros de clase** en Java? Pon un ejemplo, en la clase `Punto` definida anteriormente, para que incluya miembros de clase que permitan saber cuáles son los valores `x` e `y` máximos que se han establecido en todos los puntos que se hayan creado hasta el momento
+
+En Java, los miembros de clase (tanto atributos como métodos) se indican explícitamente anteponiendo el modificador `static` en su declaración. Esta palabra reservada altera radicalmente la semántica del elemento: en lugar de existir una copia independiente por cada objeto instanciado en el montículo (*heap*), se reserva una única posición de memoria que es compartida por todas las instancias de la clase. Esta arquitectura es directamente equivalente a declarar una variable global en un archivo de C con el modificador `static`, lo cual restringe su visibilidad al ámbito de ese archivo, pero mantiene su valor persistente a lo largo de toda la ejecución del programa, independientemente de cuántas veces se invoquen las funciones que operan sobre ella.
+
+Para resolver el requerimiento de rastrear los valores máximos históricos de las coordenadas `x` e `y` entre todos los puntos creados, resulta imprescindible utilizar atributos estáticos. Si se emplearan atributos de instancia convencionales, cada nuevo punto simplemente almacenaría sus propios valores y se perdería el conocimiento del panorama global. Al definirlos como `static`, cualquier nuevo objeto `Punto` que se instancie tiene la capacidad de comparar sus coordenadas particulares con estos registros compartidos y actualizarlos si resulta necesario. Fieles al principio de ocultación de información, estos registros globales deben declararse como `private` para evitar alteraciones arbitrarias desde el exterior, exponiendo su lectura exclusivamente a través de métodos de clase (`public static`).
+
+En la implementación que se muestra a continuación, la inicialización de los atributos estáticos se realiza con el valor numérico más bajo posible (`Double.NEGATIVE_INFINITY`). Esto garantiza algorítmicamente que el primer punto creado, sin importar si sus coordenadas son negativas, sobrescribirá estos valores y establecerá los primeros máximos reales. Cada vez que se ejecuta el constructor, se evalúa y potencialmente se modifica este estado global compartido.
+
+```java
+public class Punto {
+    // Miembros de instancia (Estado individual oculto)
+    private double x;
+    private double y;
+
+    // Miembros de clase (Estado global compartido y oculto)
+    private static double maxX = Double.NEGATIVE_INFINITY;
+    private static double maxY = Double.NEGATIVE_INFINITY;
+
+    // Constructor público
+    public Punto(double x, double y) {
+        this.x = x;
+        this.y = y;
+        
+        // Actualización del registro histórico global
+        if (x > maxX) {
+            maxX = x;
+        }
+        if (y > maxY) {
+            maxY = y;
+        }
+    }
+
+    // Método de instancia
+    public double calcularDistanciaAOrigen() {
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+    }
+
+    // Métodos de clase (Interfaz pública para consultar el estado global)
+    public static double getMaxX() {
+        return maxX; // Se puede acceder directamente sin usar 'this'
+    }
+
+    public static double getMaxY() {
+        return maxY;
+    }
+}
+```
 
 ## 14. Como sería un método factoría dentro de la clase `Punto` para construir un `Punto` a partir de dos coordenadas, pero que las redondee al entero más cercano. Escribe sólo el código del método, no toda la clase ¿Has usado `static`?
 
@@ -194,6 +252,38 @@ public static Punto crearPuntoRedondeado(double x, double y) {
 ```
 
 ## 15. Cambia la implementación de `Punto`. En vez de dos `double`, emplea un array interno de dos posiciones, intentando no modificar la interfaz pública de la clase
+
+La modificación de la representación interna de los datos sin alterar la forma en que el exterior interactúa con el objeto es el mayor beneficio práctico de la encapsulación. Al sustituir los dos atributos individuales de tipo `double` por un arreglo, se está cambiando la implementación privada (el "cómo"), pero se mantiene estrictamente intacta la interfaz pública (el "qué"). Desde la perspectiva de la programación en C, esto equivale a modificar los campos internos de una `struct` dentro del archivo fuente (`.c`) y ajustar la lógica de las funciones, sin alterar en absoluto los prototipos de las funciones expuestos en el archivo de cabecera (`.h`).
+
+Para llevar a cabo esta refactorización en Java, se declara un único atributo privado de tipo arreglo `double[]` (por ejemplo, `coordenadas`) en lugar de las variables independientes `x` e `y`. Es fundamental que el constructor mantenga exactamente la misma firma original (`public Punto(double x, double y)`) para no "romper" el código cliente que ya instancia objetos de esta clase. Dentro del constructor, se reserva la memoria para el arreglo con dos posiciones y se asignan los parámetros recibidos a los índices correspondientes (el índice 0 para `x`, y el índice 1 para `y`). 
+
+De igual manera, cualquier método público existente, como `calcularDistanciaAOrigen`, debe actualizar su código interno para extraer los valores desde el arreglo en lugar de las variables antiguas. El resultado demuestra que el encapsulamiento aísla al resto del programa de estos cambios estructurales: cualquier instrucción externa como `new Punto(3.0, 4.0)` seguirá funcionando y compilando a la perfección, ignorando por completo que la disposición de la memoria subyacente ha sido completamente rediseñada.
+
+```java
+public class Punto {
+    // Atributo privado modificado: un array en lugar de dos variables separadas
+    private double[] coordenadas;
+
+    // La interfaz pública (firma del constructor) NO cambia
+    public Punto(double x, double y) {
+        // Se inicializa el array con 2 posiciones
+        this.coordenadas = new double[2];
+        
+        // Se almacena la información en los índices correspondientes
+        this.coordenadas[0] = x;
+        this.coordenadas[1] = y;
+    }
+
+    // La interfaz pública (firma del método) NO cambia
+    public double calcularDistanciaAOrigen() {
+        // La implementación interna se adapta al nuevo atributo
+        double x = this.coordenadas[0];
+        double y = this.coordenadas[1];
+        
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    }
+}
+```
 
 ## 16. Si un atributo va a tener un método "getter" y "setter" públicos, ¿no es mejor declararlo público? ¿Cuál es la convención más habitual sobre los atributos, que sean públicos o privados? ¿Tiene esto algo que ver con las "invariantes de clase"?
 
