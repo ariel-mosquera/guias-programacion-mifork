@@ -462,3 +462,10 @@ public class DemoFamilia {
 Una relación bidireccional significa que ambos extremos mantienen referencia entre sí. No solo `Departamento` conoce a sus `Profesor`, sino que cada `Profesor` conoce también a qué `Departamento` pertenece. Esto facilita consultas en ambos sentidos, pero obliga a mantener consistencia duplicada de referencias.
 
 Para implementarla correctamente, no debería permitirse que cada lado se modifique por separado sin coordinación. Lo habitual es centralizar la actualización en métodos de negocio (`addProfesor`, `eliminarProfesor`, `cambiarDepartamento`) que actualicen ambos extremos en una sola operación atómica. Por ejemplo, al añadir un profesor al departamento, además de insertarlo en la colección, se asigna su referencia interna al departamento; al eliminarlo, se limpia esa referencia. También se validaría que un profesor no quede asignado a dos departamentos incompatibles al mismo tiempo.
+
+### Mis apuntes
+
+*importante:* Exige tener cuidado al programar para mantener la consistencia
+*Ej:* Añadir un profesor a un departamento y que solo se guarde en Departamento, pero no en profesor
+*Sol-1:* Que cada método modificador llame al otro y evitar ...?
+*Sol-2:* Solo dejar visible a terceros, uno de los métodos modificadores?
