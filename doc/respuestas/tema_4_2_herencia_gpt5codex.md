@@ -232,6 +232,11 @@ La composición permite construir objetos a partir de partes con responsabilidad
 
 Además, la composición reduce el impacto de cambios en una clase sobre otras. En herencia, una modificación en la superclase se propaga a toda la cadena. En composición, cada clase controla mejor su contrato público y delega solo lo necesario. Por eso suele considerarse una estrategia más flexible y mantenible.
 
+*Mis apuntes:*
+
+1. Herencia impone una dependencia muy fuerte de las clases de las que heredan respecto a la clase base.
+2. La herencia es menos flexible, porque si dos clases B y C heredan de A, pase lo que pase, siempre serán un A, lo que de cierto modo limita el código
+
 ## 12. Herencia vs. Composición. Se dice que la *"herencia rompe la encapsulación"*, ¿a qué se refiere esto?
 
 La idea apunta a que la subclase, para extender correctamente, necesita conocer detalles internos de la superclase más allá de su interfaz pública estricta. En especial cuando se usan miembros `protected` o métodos plantilla, la subclase pasa a depender del funcionamiento interno y del orden de ejecución de la clase base.
